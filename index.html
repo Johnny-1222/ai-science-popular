@@ -19,6 +19,10 @@
   <!-- Tailwind CSS CDN：使用 jsdelivr 镜像，国内访问更稳定 -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
+  <!-- Mermaid.js：AI 概念关系图，使用 jsdelivr 镜像 -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>
+
   <!-- Tailwind v4 主题配置：用 @theme 替代旧版 tailwind.config JS 对象 -->
   <style type="text/tailwindcss">
     @theme {
@@ -35,6 +39,28 @@
       -webkit-text-fill-color: transparent;
       color: transparent;
     }
+
+    /* ── 折叠卡片：隐藏浏览器默认的展开三角 ── */
+    details > summary { list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+
+    /* 展开/收起内容区：用 grid-template-rows 实现平滑动画 */
+    .card-expandable {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.35s ease;
+    }
+    details[open] > .card-expandable {
+      grid-template-rows: 1fr;
+    }
+    .card-expandable > div { overflow: hidden; }
+
+    /* 展开箭头旋转 */
+    .details-arrow {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+    details[open] .details-arrow { transform: rotate(180deg); }
 
     /* 全局平滑滚动：点击锚点链接时，页面会丝滑地滑过去，而不是生硬跳转 */
     html {
@@ -172,8 +198,61 @@
 
     </div>
 
-    <!-- ── 概念卡片分层展示 ── -->
-    <div class="max-w-7xl mx-auto px-4 mt-12 space-y-14">
+    <!-- ── AI 概念全景图 ── -->
+    <div class="max-w-5xl mx-auto px-4 mt-10 mb-6">
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8">
+        <h3 class="text-lg font-bold text-slate-800 mb-1">🗺️ AI 概念全景图</h3>
+        <p class="text-sm text-slate-500 mb-6">先看关系图，再读卡片，10 秒建立整体认知</p>
+        <div class="overflow-x-auto">
+          <pre class="mermaid">
+%%{init: {'theme': 'base', 'themeVariables': {'edgeLabelBackground': '#f8fafc', 'fontSize': '14px'}}}%%
+graph TD
+    AGI["🎯 AGI<br/>通用人工智能"]
+    LLM["🧠 LLM<br/>大语言模型"]
+    Prompt["💬 Prompt<br/>提示词"]
+    Token["🪙 Token<br/>词元"]
+    Context["📝 上下文窗口"]
+    Hallucination["⚠️ 幻觉<br/>Hallucination"]
+    Temperature["🌡️ 温度<br/>Temperature"]
+    RAG["📚 RAG<br/>检索增强"]
+    CoT["🔗 CoT<br/>思维链"]
+    Agent["🤖 Agent<br/>智能体"]
+
+    AGI -->|当前主力| LLM
+    LLM -->|靠输入| Prompt
+    LLM -->|计量单位| Token
+    LLM -->|记忆上限| Context
+    LLM -->|会产生| Hallucination
+    LLM -->|调节旋钮| Temperature
+    LLM -->|增强方案| RAG
+    LLM -->|推理方案| CoT
+    RAG -->|缓解| Hallucination
+    CoT -->|减少| Hallucination
+    LLM -->|进化为| Agent
+
+    classDef agi fill:#7C3AED,stroke:#6D28D9,color:#fff
+    classDef core fill:#2563EB,stroke:#1D4ED8,color:#fff
+    classDef usage fill:#059669,stroke:#047857,color:#fff
+    classDef issue fill:#D97706,stroke:#92400E,color:#fff
+    classDef solution fill:#E11D48,stroke:#9F1239,color:#fff
+    classDef advanced fill:#8B5CF6,stroke:#7C3AED,color:#fff
+
+    class AGI agi
+    class LLM core
+    class Prompt,Token,Context usage
+    class Hallucination,Temperature issue
+    class RAG,CoT solution
+    class Agent advanced
+          </pre>
+        </div>
+        <p class="text-xs text-slate-400 mt-4 text-center leading-relaxed">
+          从上到下：从「终极目标」到「日常使用」，跟着箭头看，搞懂 10 个核心概念的关系
+        </p>
+      </div>
+    </div>
+
+    <!-- ── 概念卡片分层展示（折叠式） ── -->
+    <div class="max-w-7xl mx-auto px-4 mt-8 space-y-14">
 
       <!-- ▸ 第1层：日常听过的 AI -->
       <div>
@@ -184,31 +263,38 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           <!-- 卡片：LLM -->
-          <article class="concept-card group bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <header class="flex items-center justify-between mb-4">
-              <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">第1层 · 日常听过的 AI</span>
-              <div class="flex gap-0.5 text-amber-400 text-sm" aria-label="重要度：5星">★★★★★</div>
-            </header>
-            <h3 class="text-2xl font-bold text-slate-900 mb-1">
-              <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">LLM</span>
-            </h3>
-            <p class="text-sm text-slate-500 mb-4">Large Language Model · 大语言模型</p>
-            <blockquote class="border-l-4 border-blue-400 pl-4 py-2 mb-4 bg-blue-50/50 rounded-r-lg">
-              <p class="text-slate-700 italic leading-relaxed">想象一个学生，把互联网上几乎所有的书籍、文章、聊天记录都读了一遍，然后你随时可以和他对话——这就是大语言模型（LLM）。</p>
-            </blockquote>
-            <div class="space-y-3 text-slate-700 leading-relaxed mb-5">
-              <p>LLM 是 Large Language Model 的缩写，是 ChatGPT、Claude、DeepSeek 这些 AI 助手背后的核心引擎。它通过分析几千亿条人类写过的文字，学会了理解问题并生成流畅的回答。但它不是真的在"思考"，而是在做极其精妙的"文字概率预测"——根据上下文，猜出下一个最合适的词。</p>
-              <p>举个例子：你问 LLM"我奶奶生日快到了，帮我写张贺卡"，它并不是去查什么数据库，而是从它读过的亿万篇文章里提炼出"贺卡应该温暖、简短、充满祝福"的模式，然后为你生成一段量身定制的文字。这个能力让它在写作、翻译、问答上表现惊艳。</p>
-              <p>理解 LLM 的本质很重要：它擅长"流畅"，不等于擅长"准确"——有时它会一本正经地说错事，这就是后面会讲到的"幻觉"问题的来源。</p>
-            </div>
-            <aside class="flex items-start gap-2 p-3 bg-gradient-to-r from-blue-50 to-violet-50 rounded-lg mb-4">
-              <span class="text-lg" aria-hidden="true">💡</span>
-              <p class="text-sm text-slate-600">全球主流 LLM 参数量超千亿，相当于读了几十个图书馆。</p>
-            </aside>
-            <footer class="pt-3 border-t border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity">
-              <p class="text-xs text-slate-400">来源：<a href="https://segmentfault.com/a/1190000047645758" class="hover:text-violet-600" target="_blank" rel="noopener noreferrer">SegmentFault 思否</a></p>
-            </footer>
-          </article>
+          <details class="concept-card group bg-white rounded-2xl border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <summary class="p-6 cursor-pointer select-none">
+              <header class="flex items-center justify-between mb-4">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">第1层 · 日常听过的 AI</span>
+                <div class="flex gap-0.5 text-amber-400 text-sm" aria-label="重要度：5星">★★★★★</div>
+              </header>
+              <h3 class="text-2xl font-bold text-slate-900 mb-1">
+                <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">LLM</span>
+              </h3>
+              <p class="text-sm text-slate-500 mb-4">Large Language Model · 大语言模型</p>
+              <blockquote class="border-l-4 border-blue-400 pl-4 py-2 mb-4 bg-blue-50/50 rounded-r-lg">
+                <p class="text-slate-700 italic leading-relaxed">想象一个学生，把互联网上几乎所有的书籍、文章、聊天记录都读了一遍，然后你随时可以和他对话——这就是大语言模型（LLM）。</p>
+              </blockquote>
+              <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-100">
+                <span>展开了解</span><span class="details-arrow">▼</span>
+              </div>
+            </summary>
+            <div class="card-expandable"><div><div class="px-6 pb-6">
+              <div class="space-y-3 text-slate-700 leading-relaxed mb-5">
+                <p>LLM 是 Large Language Model 的缩写，是 ChatGPT、Claude、DeepSeek 这些 AI 助手背后的核心引擎。它通过分析几千亿条人类写过的文字，学会了理解问题并生成流畅的回答。但它不是真的在"思考"，而是在做极其精妙的"文字概率预测"——根据上下文，猜出下一个最合适的词。</p>
+                <p>举个例子：你问 LLM"我奶奶生日快到了，帮我写张贺卡"，它并不是去查什么数据库，而是从它读过的亿万篇文章里提炼出"贺卡应该温暖、简短、充满祝福"的模式，然后为你生成一段量身定制的文字。这个能力让它在写作、翻译、问答上表现惊艳。</p>
+                <p>理解 LLM 的本质很重要：它擅长"流畅"，不等于擅长"准确"——有时它会一本正经地说错事，这就是后面会讲到的"幻觉"问题的来源。</p>
+              </div>
+              <aside class="flex items-start gap-2 p-3 bg-gradient-to-r from-blue-50 to-violet-50 rounded-lg mb-4">
+                <span class="text-lg" aria-hidden="true">💡</span>
+                <p class="text-sm text-slate-600">全球主流 LLM 参数量超千亿，相当于读了几十个图书馆。</p>
+              </aside>
+              <footer class="pt-3 border-t border-slate-100">
+                <p class="text-xs text-slate-400">来源：<a href="https://segmentfault.com/a/1190000047645758" class="hover:text-violet-600" target="_blank" rel="noopener noreferrer">SegmentFault 思否</a></p>
+              </footer>
+            </div></div></div>
+          </details>
 
         </div>
       </div>
@@ -222,85 +308,106 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           <!-- 卡片：Prompt -->
-          <article class="concept-card group bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <header class="flex items-center justify-between mb-4">
-              <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">第2层 · 用 AI 时的词</span>
-              <div class="flex gap-0.5 text-amber-400 text-sm" aria-label="重要度：5星">★★★★★</div>
-            </header>
-            <h3 class="text-2xl font-bold text-slate-900 mb-1">
-              <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">Prompt</span>
-            </h3>
-            <p class="text-sm text-slate-500 mb-4">提示词 · 你发给 AI 的指令</p>
-            <blockquote class="border-l-4 border-emerald-400 pl-4 py-2 mb-4 bg-emerald-50/50 rounded-r-lg">
-              <p class="text-slate-700 italic leading-relaxed">你去餐厅点菜，说"随便来一个"和说"来一份清淡的、不要辣、最好是鱼类的热菜"，厨师端出来的东西天差地别——你发给 AI 的指令，就是 Prompt。</p>
-            </blockquote>
-            <div class="space-y-3 text-slate-700 leading-relaxed mb-5">
-              <p>Prompt 是你与 AI 之间唯一的沟通桥梁。AI 不知道你的背景、意图和期望，它只能根据你写下的那段话来工作。提示词越具体、越有结构，AI 给出的回答就越接近你真正需要的结果。</p>
-              <p>具体来说：让 AI 帮你写辞职信，直接说"帮我写辞职信"，得到的往往是套话；但如果你说"我要辞职，工作了两年，原因是想转行，请写一封感谢领导、不留遗憾、200 字以内的辞职信"，AI 立刻就能给出一封你满意的版本。两种写法，输入的信息量决定了输出的质量。</p>
-              <p>会写 Prompt 是 AI 时代最值钱的基本功。它不需要学编程，只需要学会把你想要的事情说清楚。</p>
-            </div>
-            <aside class="flex items-start gap-2 p-3 bg-gradient-to-r from-blue-50 to-violet-50 rounded-lg mb-4">
-              <span class="text-lg" aria-hidden="true">💡</span>
-              <p class="text-sm text-slate-600">加上"你是一位有 10 年经验的 XX"，AI 回答质量会显著提升。</p>
-            </aside>
-            <footer class="pt-3 border-t border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity">
-              <p class="text-xs text-slate-400">来源：<a href="https://zhuanlan.zhihu.com/p/690857521" class="hover:text-violet-600" target="_blank" rel="noopener noreferrer">知乎专栏</a></p>
-            </footer>
-          </article>
+          <details class="concept-card group bg-white rounded-2xl border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <summary class="p-6 cursor-pointer select-none">
+              <header class="flex items-center justify-between mb-4">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">第2层 · 用 AI 时的词</span>
+                <div class="flex gap-0.5 text-amber-400 text-sm" aria-label="重要度：5星">★★★★★</div>
+              </header>
+              <h3 class="text-2xl font-bold text-slate-900 mb-1">
+                <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">Prompt</span>
+              </h3>
+              <p class="text-sm text-slate-500 mb-4">提示词 · 你发给 AI 的指令</p>
+              <blockquote class="border-l-4 border-emerald-400 pl-4 py-2 mb-4 bg-emerald-50/50 rounded-r-lg">
+                <p class="text-slate-700 italic leading-relaxed">你去餐厅点菜，说"随便来一个"和说"来一份清淡的、不要辣、最好是鱼类的热菜"，厨师端出来的东西天差地别——你发给 AI 的指令，就是 Prompt。</p>
+              </blockquote>
+              <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-100">
+                <span>展开了解</span><span class="details-arrow">▼</span>
+              </div>
+            </summary>
+            <div class="card-expandable"><div><div class="px-6 pb-6">
+              <div class="space-y-3 text-slate-700 leading-relaxed mb-5">
+                <p>Prompt 是你与 AI 之间唯一的沟通桥梁。AI 不知道你的背景、意图和期望，它只能根据你写下的那段话来工作。提示词越具体、越有结构，AI 给出的回答就越接近你真正需要的结果。</p>
+                <p>具体来说：让 AI 帮你写辞职信，直接说"帮我写辞职信"，得到的往往是套话；但如果你说"我要辞职，工作了两年，原因是想转行，请写一封感谢领导、不留遗憾、200 字以内的辞职信"，AI 立刻就能给出一封你满意的版本。两种写法，输入的信息量决定了输出的质量。</p>
+                <p>会写 Prompt 是 AI 时代最值钱的基本功。它不需要学编程，只需要学会把你想要的事情说清楚。</p>
+              </div>
+              <aside class="flex items-start gap-2 p-3 bg-gradient-to-r from-blue-50 to-violet-50 rounded-lg mb-4">
+                <span class="text-lg" aria-hidden="true">💡</span>
+                <p class="text-sm text-slate-600">加上"你是一位有 10 年经验的 XX"，AI 回答质量会显著提升。</p>
+              </aside>
+              <footer class="pt-3 border-t border-slate-100">
+                <p class="text-xs text-slate-400">来源：<a href="https://zhuanlan.zhihu.com/p/690857521" class="hover:text-violet-600" target="_blank" rel="noopener noreferrer">知乎专栏</a></p>
+              </footer>
+            </div></div></div>
+          </details>
 
           <!-- 卡片：Token -->
-          <article class="concept-card group bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <header class="flex items-center justify-between mb-4">
-              <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">第2层 · 用 AI 时的词</span>
-              <div class="flex gap-0.5 text-amber-400 text-sm" aria-label="重要度：5星">★★★★★</div>
-            </header>
-            <h3 class="text-2xl font-bold text-slate-900 mb-1">
-              <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">Token</span>
-            </h3>
-            <p class="text-sm text-slate-500 mb-4">词元 · AI 的计量与计费单位</p>
-            <blockquote class="border-l-4 border-emerald-400 pl-4 py-2 mb-4 bg-emerald-50/50 rounded-r-lg">
-              <p class="text-slate-700 italic leading-relaxed">就像量布匹用"米"、量鸡蛋用"个"，AI 处理文字用的计量单位叫 Token——官方中文译名是"词元"。</p>
-            </blockquote>
-            <div class="space-y-3 text-slate-700 leading-relaxed mb-5">
-              <p>Token 是 AI 处理文字时的最小单位。AI 并不像人一样一个字一个字地读，而是把文本切成一块块小片段，每块就是一个 Token——可能是半个英文单词、一个汉字，或者一个标点符号，具体怎么切取决于 AI 模型。你发的每条消息、AI 给的每段回复，都在被换算成 Token 数量——这是大部分 AI 服务计费的依据。</p>
-              <p>举个例子：以 OpenAI 为参考，1000 个 Token 大约能处理 500 个中文汉字或 750 个英文单词。和 AI 进行一次日常对话（一问一答），大约消耗几十到几百个 Token。像 ChatGPT 这样的服务按 Token 收费，免费额度用完就需要付费。Token 还决定了 AI 的"记忆上限"——超过一定数量，AI 就会"忘掉"对话的开头。</p>
-              <p>理解 Token，你就能更聪明地使用 AI：说话更精炼，省 Token，也省钱。</p>
-            </div>
-            <aside class="flex items-start gap-2 p-3 bg-gradient-to-r from-blue-50 to-violet-50 rounded-lg mb-4">
-              <span class="text-lg" aria-hidden="true">💡</span>
-              <p class="text-sm text-slate-600">1000 个 Token ≈ 500 汉字或 750 英文单词（OpenAI 官方数据）。</p>
-            </aside>
-            <footer class="pt-3 border-t border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity">
-              <p class="text-xs text-slate-400">来源：<a href="https://m.thepaper.cn/newsDetail_forward_33002724" class="hover:text-violet-600" target="_blank" rel="noopener noreferrer">澎湃新闻</a></p>
-            </footer>
-          </article>
+          <details class="concept-card group bg-white rounded-2xl border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <summary class="p-6 cursor-pointer select-none">
+              <header class="flex items-center justify-between mb-4">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">第2层 · 用 AI 时的词</span>
+                <div class="flex gap-0.5 text-amber-400 text-sm" aria-label="重要度：5星">★★★★★</div>
+              </header>
+              <h3 class="text-2xl font-bold text-slate-900 mb-1">
+                <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">Token</span>
+              </h3>
+              <p class="text-sm text-slate-500 mb-4">词元 · AI 的计量与计费单位</p>
+              <blockquote class="border-l-4 border-emerald-400 pl-4 py-2 mb-4 bg-emerald-50/50 rounded-r-lg">
+                <p class="text-slate-700 italic leading-relaxed">就像量布匹用"米"、量鸡蛋用"个"，AI 处理文字用的计量单位叫 Token——官方中文译名是"词元"。</p>
+              </blockquote>
+              <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-100">
+                <span>展开了解</span><span class="details-arrow">▼</span>
+              </div>
+            </summary>
+            <div class="card-expandable"><div><div class="px-6 pb-6">
+              <div class="space-y-3 text-slate-700 leading-relaxed mb-5">
+                <p>Token 是 AI 处理文字时的最小单位。AI 并不像人一样一个字一个字地读，而是把文本切成一块块小片段，每块就是一个 Token——可能是半个英文单词、一个汉字，或者一个标点符号，具体怎么切取决于 AI 模型。你发的每条消息、AI 给的每段回复，都在被换算成 Token 数量——这是大部分 AI 服务计费的依据。</p>
+                <p>举个例子：以 OpenAI 为参考，1000 个 Token 大约能处理 500 个中文汉字或 750 个英文单词。和 AI 进行一次日常对话（一问一答），大约消耗几十到几百个 Token。像 ChatGPT 这样的服务按 Token 收费，免费额度用完就需要付费。Token 还决定了 AI 的"记忆上限"——超过一定数量，AI 就会"忘掉"对话的开头。</p>
+                <p>理解 Token，你就能更聪明地使用 AI：说话更精炼，省 Token，也省钱。</p>
+              </div>
+              <aside class="flex items-start gap-2 p-3 bg-gradient-to-r from-blue-50 to-violet-50 rounded-lg mb-4">
+                <span class="text-lg" aria-hidden="true">💡</span>
+                <p class="text-sm text-slate-600">1000 个 Token ≈ 500 汉字或 750 英文单词（OpenAI 官方数据）。</p>
+              </aside>
+              <footer class="pt-3 border-t border-slate-100">
+                <p class="text-xs text-slate-400">来源：<a href="https://m.thepaper.cn/newsDetail_forward_33002724" class="hover:text-violet-600" target="_blank" rel="noopener noreferrer">澎湃新闻</a></p>
+              </footer>
+            </div></div></div>
+          </details>
 
           <!-- 卡片：幻觉 -->
-          <article class="concept-card group bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <header class="flex items-center justify-between mb-4">
-              <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">第2层 · 用 AI 时的词</span>
-              <div class="flex gap-0.5 text-amber-400 text-sm" aria-label="重要度：5星">★★★★★</div>
-            </header>
-            <h3 class="text-2xl font-bold text-slate-900 mb-1">
-              <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">幻觉</span>
-            </h3>
-            <p class="text-sm text-slate-500 mb-4">Hallucination · AI 一本正经地胡说八道</p>
-            <blockquote class="border-l-4 border-emerald-400 pl-4 py-2 mb-4 bg-emerald-50/50 rounded-r-lg">
-              <p class="text-slate-700 italic leading-relaxed">想象一个学生不会这道题，但为了不让老师失望，他用非常自信的语气胡编了一个答案——AI 的"幻觉"就是这种现象。</p>
-            </blockquote>
-            <div class="space-y-3 text-slate-700 leading-relaxed mb-5">
-              <p>幻觉（Hallucination）是指 AI 在没有真实依据的情况下，生成听起来合理、看起来流畅，但实际上是错误或虚构内容的现象。它不是 AI 在"撒谎"，而是因为 AI 的本质是"预测下一个词"——有时候概率最高的词，恰好组成了一个错误的答案。</p>
-              <p>举个真实场景：你让 AI 推荐一本书，它给你推荐了一本"2023 年获得诺贝尔文学奖的小说"，作者、书名都写得煞有介事——但这本书根本不存在。AI 不会说"我不知道"，它会优先生成听起来最流畅的内容，哪怕内容是假的。</p>
-              <p>幻觉在法律、医疗、学术等领域尤其危险。使用 AI 时，凡是具体的人名、数据、时间、事件，都建议交叉验证。</p>
-            </div>
-            <aside class="flex items-start gap-2 p-3 bg-gradient-to-r from-blue-50 to-violet-50 rounded-lg mb-4">
-              <span class="text-lg" aria-hidden="true">💡</span>
-              <p class="text-sm text-slate-600">遇到关键信息，永远用搜索引擎交叉核实，别全信 AI。</p>
-            </aside>
-            <footer class="pt-3 border-t border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity">
-              <p class="text-xs text-slate-400">来源：<a href="https://www.sangfor.com.cn/knowledge/AI-Hallucination" class="hover:text-violet-600" target="_blank" rel="noopener noreferrer">深信服知识中心</a></p>
-            </footer>
-          </article>
+          <details class="concept-card group bg-white rounded-2xl border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <summary class="p-6 cursor-pointer select-none">
+              <header class="flex items-center justify-between mb-4">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">第2层 · 用 AI 时的词</span>
+                <div class="flex gap-0.5 text-amber-400 text-sm" aria-label="重要度：5星">★★★★★</div>
+              </header>
+              <h3 class="text-2xl font-bold text-slate-900 mb-1">
+                <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">幻觉</span>
+              </h3>
+              <p class="text-sm text-slate-500 mb-4">Hallucination · AI 一本正经地胡说八道</p>
+              <blockquote class="border-l-4 border-emerald-400 pl-4 py-2 mb-4 bg-emerald-50/50 rounded-r-lg">
+                <p class="text-slate-700 italic leading-relaxed">想象一个学生不会这道题，但为了不让老师失望，他用非常自信的语气胡编了一个答案——AI 的"幻觉"就是这种现象。</p>
+              </blockquote>
+              <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-100">
+                <span>展开了解</span><span class="details-arrow">▼</span>
+              </div>
+            </summary>
+            <div class="card-expandable"><div><div class="px-6 pb-6">
+              <div class="space-y-3 text-slate-700 leading-relaxed mb-5">
+                <p>幻觉（Hallucination）是指 AI 在没有真实依据的情况下，生成听起来合理、看起来流畅，但实际上是错误或虚构内容的现象。它不是 AI 在"撒谎"，而是因为 AI 的本质是"预测下一个词"——有时候概率最高的词，恰好组成了一个错误的答案。</p>
+                <p>举个真实场景：你让 AI 推荐一本书，它给你推荐了一本"2023 年获得诺贝尔文学奖的小说"，作者、书名都写得煞有介事——但这本书根本不存在。AI 不会说"我不知道"，它会优先生成听起来最流畅的内容，哪怕内容是假的。</p>
+                <p>幻觉在法律、医疗、学术等领域尤其危险。使用 AI 时，凡是具体的人名、数据、时间、事件，都建议交叉验证。</p>
+              </div>
+              <aside class="flex items-start gap-2 p-3 bg-gradient-to-r from-blue-50 to-violet-50 rounded-lg mb-4">
+                <span class="text-lg" aria-hidden="true">💡</span>
+                <p class="text-sm text-slate-600">遇到关键信息，永远用搜索引擎交叉核实，别全信 AI。</p>
+              </aside>
+              <footer class="pt-3 border-t border-slate-100">
+                <p class="text-xs text-slate-400">来源：<a href="https://www.sangfor.com.cn/knowledge/AI-Hallucination" class="hover:text-violet-600" target="_blank" rel="noopener noreferrer">深信服知识中心</a></p>
+              </footer>
+            </div></div></div>
+          </details>
 
         </div>
       </div>
@@ -314,31 +421,38 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           <!-- 卡片：Agent -->
-          <article class="concept-card group bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <header class="flex items-center justify-between mb-4">
-              <span class="px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">第3层 · 进阶玩家词汇</span>
-              <div class="flex gap-0.5 text-amber-400 text-sm" aria-label="重要度：5星">★★★★★</div>
-            </header>
-            <h3 class="text-2xl font-bold text-slate-900 mb-1">
-              <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">Agent</span>
-            </h3>
-            <p class="text-sm text-slate-500 mb-4">智能体 · 从聊天到帮你办事的升级</p>
-            <blockquote class="border-l-4 border-amber-400 pl-4 py-2 mb-4 bg-amber-50/50 rounded-r-lg">
-              <p class="text-slate-700 italic leading-relaxed">如果说普通 AI 是一个只会回答问题的客服，Agent 就是一个拿到任务后能自己想办法、自己动手把事情办完的员工。</p>
-            </blockquote>
-            <div class="space-y-3 text-slate-700 leading-relaxed mb-5">
-              <p>Agent（智能体）是 AI 的升级版形态。普通 AI 只能"聊天"——你问它一个问题，它回答一个结果。而 Agent 能"行动"：它可以自己分解任务、调用工具（搜索网页、发邮件、操作文件），在没有人全程盯着的情况下，一步一步把复杂的事情做完。</p>
-              <p>举个例子：你告诉 Agent"帮我规划下周去杭州的两天行程，查好天气、找好酒店、列出必去景点"，它不会给你一段文字建议——它会真的去搜索天气、对比酒店价格、抓取景点信息，最后给你一份可直接使用的行程表。2026 年，Agent 正在从开发者工具走进普通人的工作流。</p>
-              <p>你在这个网站读到的"养虾"和"养马"，就是两种具体的 Agent 产品。</p>
-            </div>
-            <aside class="flex items-start gap-2 p-3 bg-gradient-to-r from-blue-50 to-violet-50 rounded-lg mb-4">
-              <span class="text-lg" aria-hidden="true">💡</span>
-              <p class="text-sm text-slate-600">Agent = AI 大脑 + 工具调用能力 + 自主行动能力，三者缺一不可。</p>
-            </aside>
-            <footer class="pt-3 border-t border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity">
-              <p class="text-xs text-slate-400">来源：<a href="https://ikala.ai/zh-tw/blog/ikala-ai-insight/2026-ai-agent-trend/" class="hover:text-violet-600" target="_blank" rel="noopener noreferrer">iKala AI 洞察</a></p>
-            </footer>
-          </article>
+          <details class="concept-card group bg-white rounded-2xl border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <summary class="p-6 cursor-pointer select-none">
+              <header class="flex items-center justify-between mb-4">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-700">第3层 · 进阶玩家词汇</span>
+                <div class="flex gap-0.5 text-amber-400 text-sm" aria-label="重要度：5星">★★★★★</div>
+              </header>
+              <h3 class="text-2xl font-bold text-slate-900 mb-1">
+                <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">Agent</span>
+              </h3>
+              <p class="text-sm text-slate-500 mb-4">智能体 · 从聊天到帮你办事的升级</p>
+              <blockquote class="border-l-4 border-amber-400 pl-4 py-2 mb-4 bg-amber-50/50 rounded-r-lg">
+                <p class="text-slate-700 italic leading-relaxed">如果说普通 AI 是一个只会回答问题的客服，Agent 就是一个拿到任务后能自己想办法、自己动手把事情办完的员工。</p>
+              </blockquote>
+              <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-100">
+                <span>展开了解</span><span class="details-arrow">▼</span>
+              </div>
+            </summary>
+            <div class="card-expandable"><div><div class="px-6 pb-6">
+              <div class="space-y-3 text-slate-700 leading-relaxed mb-5">
+                <p>Agent（智能体）是 AI 的升级版形态。普通 AI 只能"聊天"——你问它一个问题，它回答一个结果。而 Agent 能"行动"：它可以自己分解任务、调用工具（搜索网页、发邮件、操作文件），在没有人全程盯着的情况下，一步一步把复杂的事情做完。</p>
+                <p>举个例子：你告诉 Agent"帮我规划下周去杭州的两天行程，查好天气、找好酒店、列出必去景点"，它不会给你一段文字建议——它会真的去搜索天气、对比酒店价格、抓取景点信息，最后给你一份可直接使用的行程表。2026 年，Agent 正在从开发者工具走进普通人的工作流。</p>
+                <p>你在这个网站读到的"养虾"和"养马"，就是两种具体的 Agent 产品。</p>
+              </div>
+              <aside class="flex items-start gap-2 p-3 bg-gradient-to-r from-blue-50 to-violet-50 rounded-lg mb-4">
+                <span class="text-lg" aria-hidden="true">💡</span>
+                <p class="text-sm text-slate-600">Agent = AI 大脑 + 工具调用能力 + 自主行动能力，三者缺一不可。</p>
+              </aside>
+              <footer class="pt-3 border-t border-slate-100">
+                <p class="text-xs text-slate-400">来源：<a href="https://ikala.ai/zh-tw/blog/ikala-ai-insight/2026-ai-agent-trend/" class="hover:text-violet-600" target="_blank" rel="noopener noreferrer">iKala AI 洞察</a></p>
+              </footer>
+            </div></div></div>
+          </details>
 
         </div>
       </div>
@@ -352,31 +466,38 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           <!-- 卡片：养马 · Hermes Agent -->
-          <article class="concept-card group bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <header class="flex items-center justify-between mb-4">
-              <span class="px-3 py-1 rounded-full text-xs font-medium bg-violet-100 text-violet-700">第4层 · 圈内黑话</span>
-              <div class="flex gap-0.5 text-amber-400 text-sm" aria-label="重要度：5星">★★★★★</div>
-            </header>
-            <h3 class="text-2xl font-bold text-slate-900 mb-1">
-              <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">养马</span>
-            </h3>
-            <p class="text-sm text-slate-500 mb-4">Hermes Agent · 赫尔墨斯智能体</p>
-            <blockquote class="border-l-4 border-violet-400 pl-4 py-2 mb-4 bg-violet-50/50 rounded-r-lg">
-              <p class="text-slate-700 italic leading-relaxed">就像你养了一匹训练有素的马，套上鞍，说声"去帮我买菜"，它就自己出门跑一趟——"养马"说的就是这种感觉。</p>
-            </blockquote>
-            <div class="space-y-3 text-slate-700 leading-relaxed mb-5">
-              <p>"养马"是 2026 年 AI 圈最火的黑话之一。它的本名叫 <strong>Hermes Agent</strong>（赫尔墨斯智能体），是一个可以自主完成任务的 AI 系统。因为 Hermes 和奢侈品牌"爱马仕"同名，中国网友干脆叫它"马"，用起来就叫"养马"。</p>
-              <p>举个具体例子：你打开微信，给它发一句"帮我整理一下本周所有待回复的消息，按紧急程度排序"，它就会自己去翻聊天记录、分析内容、列出清单，全程不用你再操作一步。不是聊天，是真的替你干活。养马最让人兴奋的地方在于它会"自我进化"——每完成一次任务，它会把经验总结成"技能"存起来，下次同类任务做得更顺手，越用越懂你。</p>
-              <p>与"养虾"（OpenClaw Agent）相比，马更擅长需要长期记忆和复杂判断的任务，虾则更适合标准化的流程操作。两者不是替代关系，有投融资人士这样比喻："虾负责干活，马负责动脑。"</p>
-            </div>
-            <aside class="flex items-start gap-2 p-3 bg-gradient-to-r from-blue-50 to-violet-50 rounded-lg mb-4">
-              <span class="text-lg" aria-hidden="true">💡</span>
-              <p class="text-sm text-slate-600">Hermes Agent 上线约两个月，GitHub 星标数突破 4.8 万，月趋势榜稳居全球第一。</p>
-            </aside>
-            <footer class="pt-3 border-t border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity">
-              <p class="text-xs text-slate-400">来源：<a href="https://news.pedaily.cn/202604/562801.shtml" class="hover:text-violet-600" target="_blank" rel="noopener noreferrer">投资界·听筒Tech</a></p>
-            </footer>
-          </article>
+          <details class="concept-card group bg-white rounded-2xl border border-slate-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <summary class="p-6 cursor-pointer select-none">
+              <header class="flex items-center justify-between mb-4">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-violet-100 text-violet-700">第4层 · 圈内黑话</span>
+                <div class="flex gap-0.5 text-amber-400 text-sm" aria-label="重要度：5星">★★★★★</div>
+              </header>
+              <h3 class="text-2xl font-bold text-slate-900 mb-1">
+                <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">养马</span>
+              </h3>
+              <p class="text-sm text-slate-500 mb-4">Hermes Agent · 赫尔墨斯智能体</p>
+              <blockquote class="border-l-4 border-violet-400 pl-4 py-2 mb-4 bg-violet-50/50 rounded-r-lg">
+                <p class="text-slate-700 italic leading-relaxed">就像你养了一匹训练有素的马，套上鞍，说声"去帮我买菜"，它就自己出门跑一趟——"养马"说的就是这种感觉。</p>
+              </blockquote>
+              <div class="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-100">
+                <span>展开了解</span><span class="details-arrow">▼</span>
+              </div>
+            </summary>
+            <div class="card-expandable"><div><div class="px-6 pb-6">
+              <div class="space-y-3 text-slate-700 leading-relaxed mb-5">
+                <p>"养马"是 2026 年 AI 圈最火的黑话之一。它的本名叫 <strong>Hermes Agent</strong>（赫尔墨斯智能体），是一个可以自主完成任务的 AI 系统。因为 Hermes 和奢侈品牌"爱马仕"同名，中国网友干脆叫它"马"，用起来就叫"养马"。</p>
+                <p>举个具体例子：你打开微信，给它发一句"帮我整理一下本周所有待回复的消息，按紧急程度排序"，它就会自己去翻聊天记录、分析内容、列出清单，全程不用你再操作一步。不是聊天，是真的替你干活。养马最让人兴奋的地方在于它会"自我进化"——每完成一次任务，它会把经验总结成"技能"存起来，下次同类任务做得更顺手，越用越懂你。</p>
+                <p>与"养虾"（OpenClaw Agent）相比，马更擅长需要长期记忆和复杂判断的任务，虾则更适合标准化的流程操作。两者不是替代关系，有投融资人士这样比喻："虾负责干活，马负责动脑。"</p>
+              </div>
+              <aside class="flex items-start gap-2 p-3 bg-gradient-to-r from-blue-50 to-violet-50 rounded-lg mb-4">
+                <span class="text-lg" aria-hidden="true">💡</span>
+                <p class="text-sm text-slate-600">Hermes Agent 上线约两个月，GitHub 星标数突破 4.8 万，月趋势榜稳居全球第一。</p>
+              </aside>
+              <footer class="pt-3 border-t border-slate-100">
+                <p class="text-xs text-slate-400">来源：<a href="https://news.pedaily.cn/202604/562801.shtml" class="hover:text-violet-600" target="_blank" rel="noopener noreferrer">投资界·听筒Tech</a></p>
+              </footer>
+            </div></div></div>
+          </details>
 
         </div>
       </div>
