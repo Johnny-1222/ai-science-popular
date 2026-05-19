@@ -1,5 +1,8 @@
 # Claude Code 本地配置（每个人的设置不同，不应共享）
-.claude/
+# 注意：不能写 .claude/，否则 git 不进入该目录，!例外规则失效
+.claude/*
+!.claude/agents
+!.claude/agents/**
 
 # ── 操作系统自动生成的垃圾文件 ──────────────────────────
 # macOS 文件夹预览缓存
