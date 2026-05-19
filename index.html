@@ -1,0 +1,255 @@
+<!--
+  index.html — AI 启蒙地图网站主页
+  这是整个科普网站的唯一入口文件。
+  页面结构：固定导航栏 → Hero 首屏 → 三个内容章节（概念/工具/伦理）→ 页脚
+  后续各章节的详细内容将逐步在对应 section 中填充。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 启蒙地图 — 写给每个人的 AI 科普</title>
+
+  <!-- 引入思源黑体（Noto Sans SC），让中文显示更漂亮 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN：无需安装，直接在浏览器中加载 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    // 告诉 Tailwind 使用思源黑体作为全局默认字体
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans SC"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* 全局平滑滚动：点击锚点链接时，页面会丝滑地滑过去，而不是生硬跳转 */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* 锚点定位时留出顶部导航栏的高度（64px），避免标题被导航栏遮住 */
+    section[id] {
+      scroll-margin-top: 64px;
+    }
+  </style>
+</head>
+
+<body class="font-sans text-gray-800 bg-white">
+
+  <!-- ==================== 顶部导航栏 ====================
+       fixed：固定在屏幕顶部，不随内容滚动
+       z-50：保证导航栏始终在最上层，不被其他内容覆盖
+       backdrop-blur：毛玻璃效果，透过导航栏能隐约看到下方内容 -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- 左侧 Logo：渐变色文字，点击回到顶部 -->
+        <a href="#home" class="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          AI 启蒙地图
+        </a>
+
+        <!-- 右侧导航链接（仅在 md 以上的屏幕宽度显示，即平板/电脑） -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#home"     class="text-gray-600 hover:text-blue-500 transition-colors duration-200 font-medium">首页</a>
+          <a href="#concepts" class="text-gray-600 hover:text-blue-500 transition-colors duration-200 font-medium">概念</a>
+          <a href="#tools"    class="text-gray-600 hover:text-blue-500 transition-colors duration-200 font-medium">工具</a>
+          <a href="#ethics"   class="text-gray-600 hover:text-blue-500 transition-colors duration-200 font-medium">伦理</a>
+        </div>
+
+        <!-- 汉堡菜单按钮（仅在手机端显示，点击展开/收起移动菜单） -->
+        <button id="menu-toggle"
+                class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+                aria-label="打开菜单">
+          <!-- 三条横线用三个 span 画出来，简单易懂 -->
+          <div class="w-6 flex flex-col gap-1.5">
+            <span class="block h-0.5 bg-current rounded"></span>
+            <span class="block h-0.5 bg-current rounded"></span>
+            <span class="block h-0.5 bg-current rounded"></span>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- 手机端展开菜单，默认隐藏（hidden），点击汉堡按钮后显示 -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 bg-white/95 backdrop-blur-md">
+      <div class="px-4 py-3 flex flex-col gap-1">
+        <a href="#home"     class="mobile-link block px-4 py-2.5 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-500 transition-colors font-medium">首页</a>
+        <a href="#concepts" class="mobile-link block px-4 py-2.5 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-500 transition-colors font-medium">概念</a>
+        <a href="#tools"    class="mobile-link block px-4 py-2.5 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-500 transition-colors font-medium">工具</a>
+        <a href="#ethics"   class="mobile-link block px-4 py-2.5 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-500 transition-colors font-medium">伦理</a>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ==================== Hero 首屏区域 ====================
+       min-h-screen：高度至少撑满整个屏幕
+       渐变背景：从浅蓝（from）经靛青（via）到浅紫（to），柔和有科技感 -->
+  <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden
+    bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 pt-16">
+
+    <!-- 装饰性背景光晕（纯视觉点缀，不影响文字阅读） -->
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse"></div>
+    <div class="absolute top-1/3 right-1/4 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-pulse" style="animation-delay: 1.2s;"></div>
+
+    <!-- Hero 核心内容，relative + z-10 确保它显示在光晕层上方 -->
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+
+      <!-- 顶部小标签，营造亲切感 -->
+      <div class="inline-flex items-center gap-2 bg-white/70 backdrop-blur-sm border border-blue-100
+                  rounded-full px-4 py-1.5 text-sm text-blue-600 font-medium mb-6 shadow-sm">
+        🤖 献给每一位对 AI 感到好奇的人
+      </div>
+
+      <!-- 主标题：大字加粗，渐变色突出关键词 -->
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 leading-tight mb-6">
+        写给每个人的<br />
+        <span class="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          AI 启蒙地图
+        </span>
+      </h1>
+
+      <!-- 副标题：轻松口语化，降低读者心理门槛 -->
+      <p class="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+        从听不懂到玩起来，只需要一杯咖啡的时间 ☕
+      </p>
+
+      <!-- 主行动按钮：点击后平滑滚动到第一章节 -->
+      <a href="#concepts"
+         class="inline-flex items-center gap-2
+                bg-gradient-to-r from-blue-500 to-purple-600
+                text-white font-semibold px-8 py-4 rounded-full
+                shadow-lg hover:shadow-xl hover:scale-105
+                transition-all duration-300 text-lg">
+        开始探索
+        <!-- 向下箭头图标（SVG 内联，无需外部图标库） -->
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </a>
+    </div>
+
+    <!-- 页面底部的跳动箭头，提示用户可以继续向下滚动 -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-gray-400">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
+  </section>
+
+
+  <!-- ==================== 第一章：AI 核心概念 ==================== -->
+  <section id="concepts" class="py-24 px-4 bg-white">
+    <div class="max-w-4xl mx-auto text-center">
+
+      <!-- 章节序号标签 -->
+      <div class="inline-block bg-blue-100 text-blue-600 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+        第一章
+      </div>
+
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+        🧠 AI 核心概念
+      </h2>
+      <p class="text-gray-500 text-lg max-w-xl mx-auto leading-relaxed">
+        LLM、Prompt、Agent、RAG、Token……这些词到底是什么意思？用大白话帮你搞明白。
+      </p>
+
+      <!-- 占位框：内容后续填充 -->
+      <div class="mt-12 p-12 rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/50 text-blue-400 text-sm">
+        📝 内容正在撰写中，敬请期待……
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== 第二章：AI 工具与 Vibe Coding ==================== -->
+  <!-- 背景换成淡紫渐变，与第一章形成视觉区分 -->
+  <section id="tools" class="py-24 px-4 bg-gradient-to-br from-indigo-50 to-purple-50">
+    <div class="max-w-4xl mx-auto text-center">
+
+      <div class="inline-block bg-purple-100 text-purple-600 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+        第二章
+      </div>
+
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+        🛠️ AI 工具与 Vibe Coding
+      </h2>
+      <p class="text-gray-500 text-lg max-w-xl mx-auto leading-relaxed">
+        不会写代码也能用 AI 做出真实产品？带你体验 Vibe Coding 的魔法，从想法到作品只需一步。
+      </p>
+
+      <div class="mt-12 p-12 rounded-2xl border-2 border-dashed border-purple-200 bg-purple-50/50 text-purple-400 text-sm">
+        📝 内容正在撰写中，敬请期待……
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== 第三章：AI 与社会伦理 ==================== -->
+  <section id="ethics" class="py-24 px-4 bg-white">
+    <div class="max-w-4xl mx-auto text-center">
+
+      <div class="inline-block bg-rose-100 text-rose-500 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+        第三章
+      </div>
+
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+        ⚖️ AI 与社会伦理
+      </h2>
+      <p class="text-gray-500 text-lg max-w-xl mx-auto leading-relaxed">
+        AI 会抢走工作吗？深度伪造怎么辨别？数据隐私谁来保护？这些问题，我们不回避。
+      </p>
+
+      <div class="mt-12 p-12 rounded-2xl border-2 border-dashed border-rose-200 bg-rose-50/50 text-rose-400 text-sm">
+        📝 内容正在撰写中，敬请期待……
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== 页脚 ==================== -->
+  <footer class="bg-gray-900 text-gray-400 py-10 px-4 text-center">
+    <p class="text-sm">
+      🤖 AI 启蒙地图 &nbsp;·&nbsp; 用简单的语言，讲清楚 AI 这件大事
+    </p>
+    <p class="text-xs mt-2 text-gray-600">
+      © 2025 · 用爱发电，知识共享
+    </p>
+  </footer>
+
+
+  <!-- ==================== JavaScript 交互逻辑 ==================== -->
+  <script>
+    // 获取汉堡按钮和手机菜单的 DOM 元素
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    // 点击汉堡按钮时，切换菜单的显示/隐藏
+    // toggle('hidden') 的意思：有 hidden 就去掉，没有就加上
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // 点击手机菜单里的任意链接后，自动收起菜单
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+      });
+    });
+  </script>
+
+</body>
+</html>
