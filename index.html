@@ -16,23 +16,26 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" />
 
-  <!-- Tailwind CSS CDN：无需安装，直接在浏览器中加载 -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS CDN：使用 jsdelivr 镜像，国内访问更稳定 -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-  <script>
-    // 告诉 Tailwind 使用思源黑体作为全局默认字体
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Noto Sans SC"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-          },
-        }
-      }
+  <!-- Tailwind v4 主题配置：用 @theme 替代旧版 tailwind.config JS 对象 -->
+  <style type="text/tailwindcss">
+    @theme {
+      --font-family-sans: "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
     }
-  </script>
+  </style>
 
   <style>
+    /* 渐变文字兜底样式 —— 防止 Tailwind CDN 加载延迟导致文字消失 */
+    .gradient-text {
+      background: linear-gradient(to right, #3B82F6, #8B5CF6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
     /* 全局平滑滚动：点击锚点链接时，页面会丝滑地滑过去，而不是生硬跳转 */
     html {
       scroll-behavior: smooth;
@@ -56,7 +59,7 @@
       <div class="flex items-center justify-between h-16">
 
         <!-- 左侧 Logo：渐变色文字，点击回到顶部 -->
-        <a href="#home" class="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+        <a href="#home" class="text-xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent gradient-text">
           AI 启蒙地图
         </a>
 
@@ -117,7 +120,7 @@
       <!-- 主标题：大字加粗，渐变色突出关键词 -->
       <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 leading-tight mb-6">
         写给每个人的<br />
-        <span class="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+        <span class="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent gradient-text">
           AI 启蒙地图
         </span>
       </h1>
@@ -188,7 +191,7 @@
 
           <!-- 标题区 -->
           <h3 class="text-2xl font-bold text-slate-900 mb-1">
-            <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent">
+            <span class="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent gradient-text">
               养马
             </span>
           </h3>
