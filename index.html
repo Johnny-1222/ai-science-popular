@@ -21,16 +21,27 @@
 
   <!-- Mermaid.js：AI 概念关系图，使用 jsdelivr 镜像 -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-  <script>mermaid.initialize({ startOnLoad: true, theme: 'base' });</script>
-
-  <!-- Tailwind v4 主题配置：用 @theme 替代旧版 tailwind.config JS 对象 -->
-  <style type="text/tailwindcss">
-    @theme {
-      --font-family-sans: "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
-    }
-  </style>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      mindmap: {
+        padding: 16,
+        maxNodeWidth: 200
+      },
+      themeVariables: {
+        fontSize: '16px',
+        fontFamily: '"Noto Sans SC", sans-serif'
+      }
+    });
+  </script>
 
   <style>
+    /* 正文字体：思源黑体（Noto Sans SC），避免使用 @theme 触发编辑器 CSS 校验警告 */
+    body {
+      font-family: "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+    }
+
     /* 渐变文字兜底样式 —— 防止 Tailwind CDN 加载延迟导致文字消失 */
     .gradient-text {
       background: linear-gradient(to right, #3B82F6, #8B5CF6);
@@ -74,7 +85,7 @@
   </style>
 </head>
 
-<body class="font-sans text-gray-800 bg-white">
+<body class="text-gray-800 bg-white">
 
   <!-- ==================== 顶部导航栏 ====================
        fixed：固定在屏幕顶部，不随内容滚动
@@ -198,159 +209,106 @@
 
     </div>
 
-    <!-- ── AI 概念全景图 v3.0 ── -->
-    <div class="max-w-[1400px] mx-auto px-4 mt-10 mb-6">
+    <!-- ── AI 概念全景图 v4.0 ── -->
+    <div class="max-w-[1600px] mx-auto px-4 mt-10 mb-6">
       <div class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8">
         <h3 class="text-lg font-bold text-slate-800 mb-1">🗺️ AI 概念全景图</h3>
-        <p class="text-sm text-slate-500 mb-6">5 大星系，50+ 概念，覆盖 2026 年 AI 圈所有热门词汇与黑话</p>
-        <div class="overflow-x-auto">
-          <pre class="mermaid">
-%%{init: {'theme': 'base'}}%%
-graph TD
-    %% ========== 星系 1：基础认知 ==========
-    subgraph S1["🌌 星系 1：基础认知"]
-        direction TB
-        ASI["🚀 ASI<br/>超级智能"]:::ultimate
-        AGI["🎯 AGI<br/>通用人工智能"]:::goal
-        LLM["🧠 LLM<br/>大语言模型"]:::core
-        Transformer["⚡ Transformer<br/>变形金刚架构"]:::tech
-        GPT["📜 GPT<br/>生成式预训练"]:::tech
-
-        ASI -.终极.-> AGI
-        AGI -.目标.-> LLM
-        Transformer --> GPT
-        GPT --> LLM
-    end
-
-    %% ========== 星系 2：使用层 ==========
-    subgraph S2["🌌 星系 2：日常使用层"]
-        direction TB
-        Prompt["💬 Prompt<br/>提示词"]:::use
-        Token["🔢 Token<br/>词元"]:::use
-        Context["📖 Context<br/>上下文窗口"]:::use
-        Temp["🌡️ Temperature<br/>温度"]:::use
-        Hallucination["⚠️ 幻觉<br/>(常见问题)"]:::issue
-        RAG["📚 RAG<br/>检索增强"]:::solution
-        CoT["🔗 CoT<br/>思维链"]:::solution
-
-        Prompt --> Hallucination
-        Hallucination -.缓解.-> RAG
-        Hallucination -.缓解.-> CoT
-    end
-
-    %% ========== 星系 3：Agent 生态（养马养虾）==========
-    subgraph S3["🌌 星系 3：Agent 生态（养马·养虾）"]
-        direction TB
-        Agent["🤖 Agent<br/>智能体"]:::agent
-        OpenClaw["🦞 OpenClaw<br/>(养虾·小龙虾)"]:::agentProduct
-        Hermes["🐎 Hermes<br/>(养马·爱马仕)"]:::agentProduct
-        Skill["✨ Skill<br/>技能"]:::agentPart
-        Memory["💾 Memory<br/>记忆"]:::agentPart
-        Gateway["🌐 Gateway<br/>网关"]:::agentPart
-        Subagent["👥 Sub-agent<br/>子代理"]:::agentPart
-        ToolUse["🛠️ Tool Use<br/>工具调用"]:::agentPart
-        MCP["🔌 MCP<br/>模型上下文协议"]:::agentPart
-
-        Agent --> OpenClaw
-        Agent --> Hermes
-        OpenClaw -.进化.-> Hermes
-        Hermes --> Skill
-        Hermes --> Memory
-        Hermes --> Gateway
-        Hermes --> Subagent
-        Hermes --> ToolUse
-        MCP -.标准.-> ToolUse
-    end
-
-    %% ========== 星系 4：多模态宇宙 ==========
-    subgraph S4["🌌 星系 4：多模态宇宙"]
-        direction TB
-        Multimodal["🎨 Multimodal<br/>多模态"]:::multi
-        NanoBanana["🍌 Nano Banana<br/>纳米香蕉"]:::multiProduct
-        NanoBananaPro["🍌✨ Nano Banana Pro<br/>香蕉 Pro"]:::multiProduct
-        GPTImage["🖼️ GPT-Image-2<br/>OpenAI 图像"]:::multiProduct
-        Sora["🎬 Sora<br/>视频生成"]:::multiProduct
-        ThreeD["🧊 3D 生成<br/>Rodin 等"]:::multiProduct
-
-        Multimodal --> NanoBanana
-        NanoBanana -.升级.-> NanoBananaPro
-        Multimodal --> GPTImage
-        Multimodal --> Sora
-        Multimodal --> ThreeD
-    end
-
-    %% ========== 星系 5：Vibe Coding 工具链 ==========
-    subgraph S5["🌌 星系 5：Vibe Coding 工具链"]
-        direction TB
-        VibeCoding["✨ Vibe Coding<br/>氛围编程"]:::vibe
-        ClaudeCode["🤖 Claude Code<br/>(终端·我们在用)"]:::vibeTool
-        Cursor["📝 Cursor<br/>(VS Code 系)"]:::vibeTool
-        Codex["⌨️ Codex CLI<br/>(OpenAI)"]:::vibeTool
-        ClaudeMd["📄 CLAUDE.md<br/>项目记忆"]:::vibePart
-        CursorRules[".cursorrules<br/>AI 行为指南"]:::vibePart
-        SpecCoding["📋 Spec Coding<br/>规格驱动"]:::vibePart
-        Hook["🪝 Hook<br/>钩子"]:::vibePart
-
-        VibeCoding --> ClaudeCode
-        VibeCoding --> Cursor
-        VibeCoding --> Codex
-        ClaudeCode --> ClaudeMd
-        ClaudeCode --> Hook
-        Cursor --> CursorRules
-        ClaudeCode -.高级用法.-> SpecCoding
-    end
-
-    %% ========== 跨星系桥梁（关键连接）==========
-    LLM ==> Prompt
-    LLM ==> Multimodal
-    RAG ==> Agent
-    CoT ==> Agent
-    Agent ==> VibeCoding
-    Subagent -.同名概念.-> ClaudeCode
-
-    %% ========== 样式定义 ==========
-    classDef ultimate fill:#FAF5FF,stroke:#9333EA,stroke-width:3px,color:#581C87,font-weight:bold
-    classDef goal fill:#F5F3FF,stroke:#7C3AED,stroke-width:2px,color:#5B21B6
-    classDef core fill:#EFF6FF,stroke:#2563EB,stroke-width:3px,color:#1E40AF,font-weight:bold
-    classDef tech fill:#F1F5F9,stroke:#475569,stroke-width:2px,color:#1E293B
-    classDef use fill:#ECFDF5,stroke:#10B981,stroke-width:2px,color:#065F46
-    classDef issue fill:#FFFBEB,stroke:#F59E0B,stroke-width:2px,color:#92400E
-    classDef solution fill:#FFF1F2,stroke:#F43F5E,stroke-width:2px,color:#9F1239
-    classDef agent fill:#F5F3FF,stroke:#8B5CF6,stroke-width:3px,color:#6D28D9,font-weight:bold
-    classDef agentProduct fill:#FAE8FF,stroke:#C026D3,stroke-width:2px,color:#86198F
-    classDef agentPart fill:#FDF4FF,stroke:#A855F7,stroke-width:1.5px,color:#7E22CE
-    classDef multi fill:#FEF3C7,stroke:#D97706,stroke-width:3px,color:#92400E,font-weight:bold
-    classDef multiProduct fill:#FED7AA,stroke:#EA580C,stroke-width:2px,color:#9A3412
-    classDef vibe fill:#DBEAFE,stroke:#2563EB,stroke-width:3px,color:#1E3A8A,font-weight:bold
-    classDef vibeTool fill:#BFDBFE,stroke:#3B82F6,stroke-width:2px,color:#1E40AF
-    classDef vibePart fill:#E0F2FE,stroke:#0EA5E9,stroke-width:1.5px,color:#075985
-          </pre>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mt-6 text-xs text-slate-600">
+        <p class="text-sm text-slate-500 mb-6">40 个核心概念，6 大领域，一张图建立 AI 完整认知</p>
+        <pre class="mermaid" style="min-height: 800px;">
+mindmap
+  root)🗺️ AI 全景图(
+    🎯 终极目标
+      AGI 通用人工智能
+      AI 安全·对齐
+    🧠 主流 AI 产品
+      🌍 国外
+        ChatGPT 美国
+        Claude 美国
+        Gemini 谷歌
+      🇨🇳 国内
+        DeepSeek
+        Kimi
+        豆包 字节
+        文心一言 百度
+    💬 用 AI 的关键词
+      Prompt 提示词
+      Token 词元·计费单位
+      Context 上下文窗口
+      Temperature 温度
+      联网搜索
+      多模态对话
+    ⚠️ AI 常见问题
+      幻觉 一本正经胡说
+      偏见 训练数据偏差
+      隐私 数据泄露风险
+      版权 训练数据争议
+    🤖 Agent 时代
+      Agent 智能体
+      🐎 当红 Agent 产品
+        OpenClaw 养虾·小龙虾
+        Hermes 养马·爱马仕
+      🧩 核心组件
+        Skill 技能
+        Memory 记忆
+        Tool Use 工具调用
+        MCP 模型上下文协议
+      🧠 思考方式
+        RAG 检索增强
+        CoT 思维链
+    ✨ Vibe Coding 工具
+      💻 编程助手
+        Claude Code 终端
+        Cursor 编辑器
+        GitHub Copilot
+      🌐 一句话建站
+        Lovable
+        Bolt
+        V0 UI 生成
+      ⚙️ 关键配置
+        CLAUDE.md 项目记忆
+        Hook 钩子
+    🎨 多模态创作
+      🖼️ AI 绘画
+        ChatGPT 画图
+        Nano Banana 香蕉
+        Nano Banana Pro
+        GPT-Image-2
+        Midjourney 艺术
+      🎬 视频与 3D
+        Sora 视频生成
+        3D 生成 Rodin
+        数字人·AI 主播
+        </pre>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mt-6 text-xs">
           <div class="flex flex-col items-center gap-1 p-3 bg-violet-50 rounded-lg">
-            <span class="font-semibold text-violet-700">🌌 星系 1</span>
-            <span class="text-slate-500">基础认知</span>
-            <span class="text-[10px] text-slate-400">AGI · LLM · Transformer</span>
-          </div>
-          <div class="flex flex-col items-center gap-1 p-3 bg-emerald-50 rounded-lg">
-            <span class="font-semibold text-emerald-700">🌌 星系 2</span>
-            <span class="text-slate-500">日常使用</span>
-            <span class="text-[10px] text-slate-400">Prompt · Token · 幻觉</span>
-          </div>
-          <div class="flex flex-col items-center gap-1 p-3 bg-fuchsia-50 rounded-lg">
-            <span class="font-semibold text-fuchsia-700">🌌 星系 3</span>
-            <span class="text-slate-500">Agent 生态</span>
-            <span class="text-[10px] text-slate-400">养马 · 养虾 · Skill</span>
-          </div>
-          <div class="flex flex-col items-center gap-1 p-3 bg-amber-50 rounded-lg">
-            <span class="font-semibold text-amber-700">🌌 星系 4</span>
-            <span class="text-slate-500">多模态宇宙</span>
-            <span class="text-[10px] text-slate-400">香蕉 · Sora · 3D</span>
+            <span class="text-2xl">🎯</span>
+            <span class="font-semibold text-violet-700">终极目标</span>
+            <span class="text-[10px] text-slate-500 text-center">AGI · AI 安全</span>
           </div>
           <div class="flex flex-col items-center gap-1 p-3 bg-blue-50 rounded-lg">
-            <span class="font-semibold text-blue-700">🌌 星系 5</span>
-            <span class="text-slate-500">Vibe Coding</span>
-            <span class="text-[10px] text-slate-400">Claude Code · Cursor</span>
+            <span class="text-2xl">🧠</span>
+            <span class="font-semibold text-blue-700">主流 AI</span>
+            <span class="text-[10px] text-slate-500 text-center">ChatGPT · Claude · DeepSeek</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 p-3 bg-emerald-50 rounded-lg">
+            <span class="text-2xl">💬</span>
+            <span class="font-semibold text-emerald-700">使用关键词</span>
+            <span class="text-[10px] text-slate-500 text-center">Prompt · Token · Context</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 p-3 bg-amber-50 rounded-lg">
+            <span class="text-2xl">⚠️</span>
+            <span class="font-semibold text-amber-700">常见问题</span>
+            <span class="text-[10px] text-slate-500 text-center">幻觉 · 偏见 · 隐私</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 p-3 bg-fuchsia-50 rounded-lg">
+            <span class="text-2xl">🤖</span>
+            <span class="font-semibold text-fuchsia-700">Agent 时代</span>
+            <span class="text-[10px] text-slate-500 text-center">养马 · 养虾 · MCP</span>
+          </div>
+          <div class="flex flex-col items-center gap-1 p-3 bg-rose-50 rounded-lg">
+            <span class="text-2xl">✨🎨</span>
+            <span class="font-semibold text-rose-700">Vibe & 创作</span>
+            <span class="text-[10px] text-slate-500 text-center">Claude Code · 香蕉 · Sora</span>
           </div>
         </div>
       </div>
